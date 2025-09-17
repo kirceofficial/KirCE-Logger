@@ -1,16 +1,16 @@
 # KirCE Logger
 
-![Logo](images/logo.png)
 
-**KirCE Logger** is an advanced and improved Java Logger with enhanced performance.  
+
+**KirCE Logger** is an advanced and improved Java Logger with enhanced performance.\
 It is cross-platform and suitable for any project.
 
 ## Features
 
-- Cross-platform (works on Android, Desktop, and server applications)  
-- Supports different log levels: `TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL`  
-- Easy integration into any project  
-- Extensible via `LogHandler`  
+- Cross-platform (works on Android, Desktop, and server applications)
+- Supports different log levels: `TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL`
+- Easy integration into any project
+- Extensible via `LogHandler`
 - High performance with minimal resource consumption
 
 ## Example Usage
@@ -33,6 +33,7 @@ public class Main {
         logger.fatal("This is a FATAL message");
     }
 }
+```
 
 ## Installation
 
@@ -42,3 +43,4 @@ Using Gradle:
 dependencies {
     implementation 'mx.kirce.logger:kirce-logger:1.0.0'
 }
+```
