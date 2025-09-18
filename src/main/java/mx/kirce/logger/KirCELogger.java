@@ -18,16 +18,16 @@ package mx.kirce.logger;
 
 import mx.kirce.logger.handle.LogHandler;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Core class of the KirCE Logger framework.
  *
  * <p>This logger provides flexible logging with support for multiple handlers,
- * customizable formatters, and adjustable minimum log levels. Handlers can be
- * attached either per-instance or globally for all loggers.</p>
+ * customizable formatters, adjustable minimum log levels, and asynchronous logging.
+ * Handlers can be attached either per-instance or globally for all loggers.</p>
  *
- * <p>Example usage:</p>
  * <pre>
  * KirCELogger logger = new KirCELogger("Main");
  * logger.addHandler(new ConsoleLogHandler());
@@ -40,7 +40,7 @@ public class KirCELogger {
     private final LogFormatter formatter;
     private LogLevel minLevel = LogLevel.TRACE;
 
-    private static final List<LogHandler> globalHandlers = new ArrayList<>();
+    private static final List<LogHandler> globalHandlers = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * Creates a logger with a default formatter (yyyy-MM-dd HH:mm:ss).
@@ -48,8 +48,7 @@ public class KirCELogger {
      * @param tag the tag identifying the source of the log (e.g., class name)
      */
     public KirCELogger(String tag) {
-        this.tag = tag;
-        this.formatter = new LogFormatter("yyyy-MM-dd HH:mm:ss");
+        this(tag, new LogFormatter("yyyy-MM-dd HH:mm:ss"));
     }
 
     /**
@@ -69,7 +68,7 @@ public class KirCELogger {
      * @param handler the handler to add
      */
     public void addHandler(LogHandler handler) {
-        handlers.add(handler);
+        if (handler != null) handlers.add(handler);
     }
 
     /**
@@ -78,7 +77,7 @@ public class KirCELogger {
      * @param handler the global handler to add
      */
     public static void addGlobalHandler(LogHandler handler) {
-        globalHandlers.add(handler);
+        if (handler != null) globalHandlers.add(handler);
     }
 
     /**
@@ -88,43 +87,93 @@ public class KirCELogger {
      * @param level the minimum log level
      */
     public void setMinLevel(LogLevel level) {
-        this.minLevel = level;
+        if (level != null) this.minLevel = level;
     }
 
     /**
-     * Internal method to process and deliver log messages.
+     * Internal method to process and deliver log messages synchronously.
      *
      * @param level   the log level
      * @param message the message text
      */
     private void log(LogLevel level, String message) {
-        if (level.ordinal() < minLevel.ordinal()) return;
+        if (level.ordinal() < minLevel.ordinal() || message == null) return;
 
         String formatted = formatter.format(level, tag, message);
 
-        for (LogHandler handler : handlers) {
-            handler.log(level, tag, formatted);
-        }
-        for (LogHandler handler : globalHandlers) {
-            handler.log(level, tag, formatted);
+        handlers.forEach(h -> h.log(level, tag, formatted));
+        synchronized (globalHandlers) {
+            globalHandlers.forEach(h -> h.log(level, tag, formatted));
         }
     }
 
-    /** Logs a TRACE level message. */
+    /**
+     * Internal method to process and deliver log messages asynchronously.
+     *
+     * @param level   the log level
+     * @param message the message text
+     */
+    public void logAsync(LogLevel level, String message) {
+        new Thread(() -> log(level, message)).start();
+    }
+
+    /** Logs a TRACE level message.
+     * @param message the message to log
+     */
     public void trace(String message) { log(LogLevel.TRACE, message); }
 
-    /** Logs a DEBUG level message. */
+    /** Logs a DEBUG level message.
+     * @param message the message to log
+     */
     public void debug(String message) { log(LogLevel.DEBUG, message); }
 
-    /** Logs an INFO level message. */
+    /** Logs an INFO level message.
+     * @param message the message to log
+     */
     public void info(String message)  { log(LogLevel.INFO, message); }
 
-    /** Logs a WARN level message. */
+    /** Logs a WARN level message.
+     * @param message the message to log
+     */
     public void warn(String message)  { log(LogLevel.WARN, message); }
 
-    /** Logs an ERROR level message. */
+    /** Logs an ERROR level message.
+     * @param message the message to log
+     */
     public void error(String message) { log(LogLevel.ERROR, message); }
 
-    /** Logs a FATAL level message. */
+    /** Logs a FATAL level message.
+     * @param message the message to log
+     */
     public void fatal(String message) { log(LogLevel.FATAL, message); }
+
+    /** Asynchronous TRACE level logging.
+     * @param message the message to log
+     */
+    public void traceAsync(String message) { logAsync(LogLevel.TRACE, message); }
+
+    /** Asynchronous DEBUG level logging.
+     * @param message the message to log
+     */
+    public void debugAsync(String message) { logAsync(LogLevel.DEBUG, message); }
+
+    /** Asynchronous INFO level logging.
+     * @param message the message to log
+     */
+    public void infoAsync(String message)  { logAsync(LogLevel.INFO, message); }
+
+    /** Asynchronous WARN level logging.
+     * @param message the message to log
+     */
+    public void warnAsync(String message)  { logAsync(LogLevel.WARN, message); }
+
+    /** Asynchronous ERROR level logging.
+     * @param message the message to log
+     */
+    public void errorAsync(String message) { logAsync(LogLevel.ERROR, message); }
+
+    /** Asynchronous FATAL level logging.
+     * @param message the message to log
+     */
+    public void fatalAsync(String message) { logAsync(LogLevel.FATAL, message); }
 }

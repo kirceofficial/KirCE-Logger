@@ -1,8 +1,8 @@
 # KirCE Logger
 
+![KirCE Logger Logo](images/logo.png)
 
-
-**KirCE Logger** is an advanced and improved Java Logger with enhanced performance.\
+**KirCE Logger** is an open-source advanced and improved Java Logger with enhanced performance.\
 It is cross-platform and suitable for any project.
 
 ## Features
@@ -40,7 +40,11 @@ public class Main {
 Using Gradle:
 
 ```gradle
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
-    implementation 'mx.kirce.logger:kirce-logger:1.0.0'
+    implementation 'com.github.mixofficial:KirCE-Logger:+'
 }
 ```
