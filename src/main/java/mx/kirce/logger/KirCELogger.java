@@ -20,6 +20,8 @@ import mx.kirce.logger.handle.LogHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Core class of the KirCE Logger framework.
@@ -35,12 +37,18 @@ import java.util.List;
  * </pre>
  */
 public class KirCELogger {
+
     private final String tag;
     private final List<LogHandler> handlers = new ArrayList<>();
     private final LogFormatter formatter;
     private LogLevel minLevel = LogLevel.TRACE;
 
     private static final List<LogHandler> globalHandlers = Collections.synchronizedList(new ArrayList<>());
+    private static LogLevel globalMinLevel = LogLevel.TRACE;
+
+    private static final ExecutorService asyncExecutor = Executors.newFixedThreadPool(
+            Runtime.getRuntime().availableProcessors()
+    );
 
     /**
      * Creates a logger with a default formatter (yyyy-MM-dd HH:mm:ss).
@@ -91,13 +99,23 @@ public class KirCELogger {
     }
 
     /**
+     * Sets the global minimum log level for all loggers.
+     *
+     * @param level the global minimum log level
+     */
+    public static void setGlobalMinLevel(LogLevel level) {
+        if (level != null) globalMinLevel = level;
+    }
+
+    /**
      * Internal method to process and deliver log messages synchronously.
      *
      * @param level   the log level
      * @param message the message text
      */
     private void log(LogLevel level, String message) {
-        if (level.ordinal() < minLevel.ordinal() || message == null) return;
+        if (level.ordinal() < minLevel.ordinal() || level.ordinal() < globalMinLevel.ordinal() || message == null)
+            return;
 
         String formatted = formatter.format(level, tag, message);
 
@@ -114,7 +132,7 @@ public class KirCELogger {
      * @param message the message text
      */
     public void logAsync(LogLevel level, String message) {
-        new Thread(() -> log(level, message)).start();
+        asyncExecutor.submit(() -> log(level, message));
     }
 
     /** Logs a TRACE level message.
@@ -176,4 +194,14 @@ public class KirCELogger {
      * @param message the message to log
      */
     public void fatalAsync(String message) { logAsync(LogLevel.FATAL, message); }
+
+    /**
+     * Quickly get a logger instance with default formatter.
+     *
+     * @param tag The tag identifying the source
+     * @return KirCELogger instance
+     */
+    public static KirCELogger getLogger(String tag) {
+        return new KirCELogger(tag);
+    }
 }
