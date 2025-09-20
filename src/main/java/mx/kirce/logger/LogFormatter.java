@@ -2,16 +2,10 @@
  * Copyright 2025 Mix (KirCE Logger)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 package mx.kirce.logger;
@@ -20,38 +14,72 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Utility class for formatting log messages in KirCE Logger.
+ * Improved utility class for formatting log messages in KirCE Logger.
  *
- * <p>This class is responsible for constructing log message strings
- * with a given time pattern, log level, tag, and message.</p>
+ * <p>This formatter supports custom templates for the log output. Users can define
+ * the order of timestamp, level, tag, and message using placeholders:</p>
  *
- * <p>Example output:</p>
+ * <ul>
+ *     <li>{time} - the formatted timestamp</li>
+ *     <li>{level} - the log level</li>
+ *     <li>{tag} - the log tag</li>
+ *     <li>{message} - the log message</li>
+ * </ul>
+ *
+ * <p>Supports optional colored output using ANSI codes. Use {@link #setUseColor(boolean)}
+ * to enable or disable colors.</p>
+ *
  * <pre>
- * [2025-09-17 10:15:00] [INFO] Main: Application started successfully
+ * LogFormatter formatter = new LogFormatter("HH:mm:ss", "{level} - {tag} -> {message}");
+ * formatter.setUseColor(true);
+ * String log = formatter.format(LogLevel.INFO, "Main", "Application started!");
  * </pre>
  */
 public class LogFormatter {
     private final DateTimeFormatter timeFormatter;
+    private final String template;
+    private boolean useColor = false;
 
     /**
-     * Creates a new LogFormatter with a custom date-time pattern.
+     * Creates a new LogFormatter with a date-time pattern and custom template.
      *
-     * @param pattern The date-time pattern (e.g., "yyyy-MM-dd HH:mm:ss")
+     * @param timePattern the date-time pattern (e.g., "yyyy-MM-dd HH:mm:ss")
+     * @param template    the template for log messages using {time}, {level}, {tag}, {message}
      */
-    public LogFormatter(String pattern) {
-        this.timeFormatter = DateTimeFormatter.ofPattern(pattern);
+    public LogFormatter(String timePattern, String template) {
+        this.timeFormatter = DateTimeFormatter.ofPattern(timePattern);
+        this.template = template != null ? template : "[{time}] [{level}] {tag}: {message}";
     }
 
     /**
-     * Formats a log message with timestamp, log level, tag, and message.
+     * Enables or disables colored output.
      *
-     * @param level   The log level (e.g., INFO, WARN, ERROR)
-     * @param tag     The tag indicating the source of the log (e.g., class name)
-     * @param message The log message
-     * @return A formatted log string
+     * @param useColor true to enable colors, false for plain text
+     */
+    public void setUseColor(boolean useColor) {
+        this.useColor = useColor;
+    }
+
+    /**
+     * Formats a log message according to the template.
+     *
+     * @param level   the log level
+     * @param tag     the source tag
+     * @param message the log message
+     * @return formatted log string
      */
     public String format(LogLevel level, String tag, String message) {
         String time = LocalDateTime.now().format(timeFormatter);
-        return "[" + time + "] [" + level + "] " + tag + ": " + message;
+        String levelStr = level.toString();
+
+        if (useColor) {
+            levelStr = level.getColorCode() + levelStr + "\u001B[0m"; // reset color
+        }
+
+        return template
+                .replace("{time}", time)
+                .replace("{level}", levelStr)
+                .replace("{tag}", tag)
+                .replace("{message}", message);
     }
 }

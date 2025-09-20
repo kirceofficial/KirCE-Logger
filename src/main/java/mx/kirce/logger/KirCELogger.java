@@ -2,16 +2,10 @@
  * Copyright 2025 Mix (KirCE Logger)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 package mx.kirce.logger;
@@ -56,7 +50,7 @@ public class KirCELogger {
      * @param tag the tag identifying the source of the log (e.g., class name)
      */
     public KirCELogger(String tag) {
-        this(tag, new LogFormatter("yyyy-MM-dd HH:mm:ss"));
+        this(tag, new LogFormatter("yyyy-MM-dd HH:mm:ss", "[{time}] [{level}] {tag}: {message}"));
     }
 
     /**
@@ -117,7 +111,7 @@ public class KirCELogger {
         if (level.ordinal() < minLevel.ordinal() || level.ordinal() < globalMinLevel.ordinal() || message == null)
             return;
 
-        String formatted = formatter.format(level, tag, message);
+        final String formatted = formatter.format(level, tag, message);
 
         handlers.forEach(h -> h.log(level, tag, formatted));
         synchronized (globalHandlers) {
