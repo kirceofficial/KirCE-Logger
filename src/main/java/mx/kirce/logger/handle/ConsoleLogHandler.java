@@ -13,30 +13,25 @@ package mx.kirce.logger.handle;
 import mx.kirce.logger.LogLevel;
 
 /**
- * A simple {@link LogHandler} implementation that writes log messages
- * to the system console using {@link System#out}, with optional color support.
+ * A {@link LogHandler} implementation that writes log messages
+ * to the system console with optional color support.
  *
- * <p>This handler is useful for debugging and development purposes,
- * as it outputs logs directly to standard output.</p>
+ * <p>This handler can be used for debugging in console applications or Android Studio Logcat.</p>
  *
- * <p>Colors can be enabled or disabled using the constructor.</p>
+ * <p>Colors are derived from {@link LogLevel#getColorCode()} if enabled.</p>
  *
  * <pre>
  * KirCELogger logger = new KirCELogger("Main");
- * logger.addHandler(new ConsoleLogHandler(true)); // with colors
+ * logger.addHandler(new ConsoleLogHandler(true)); // enable colors
  * logger.info("Hello from KirCE Logger!");
+ *
+ * // Disable colors
+ * logger.addHandler(new ConsoleLogHandler(false));
  * </pre>
  */
 public class ConsoleLogHandler implements LogHandler {
 
     private final boolean useColors;
-
-    // ANSI escape codes
-    private static final String RESET = "\u001B[0m";
-    private static final String RED = "\u001B[31m";
-    private static final String YELLOW = "\u001B[33m";
-    private static final String GREEN = "\u001B[32m";
-    private static final String CYAN = "\u001B[36m";
 
     /**
      * Creates a ConsoleLogHandler with colors enabled by default.
@@ -55,26 +50,18 @@ public class ConsoleLogHandler implements LogHandler {
     }
 
     /**
-     * Logs the given message to the system console, applying color if enabled.
+     * Logs the given message to the console, applying colors if enabled.
      *
-     * @param level   the log level (e.g., INFO, WARN, ERROR)
-     * @param tag     the tag identifying the source of the log
+     * @param level   the log level (TRACE, DEBUG, INFO, WARN, ERROR, FATAL)
+     * @param tag     the source tag for the log message
      * @param message the formatted log message
      */
     @Override
     public void log(LogLevel level, String tag, String message) {
         String output = message;
-
         if (useColors) {
-            switch (level) {
-                case TRACE -> output = CYAN + message + RESET;
-                case DEBUG -> output = message; // default console color
-                case INFO -> output = GREEN + message + RESET;
-                case WARN -> output = YELLOW + message + RESET;
-                case ERROR, FATAL -> output = RED + message + RESET;
-            }
+            output = level.getColorCode() + message + "\u001B[0m";
         }
-
         System.out.println(output);
     }
 }

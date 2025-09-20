@@ -3,23 +3,18 @@ plugins {
 }
 
 group = 'mx.kirce.logger'
-version = '1.0.3-pre1'
+version = '1.0.3'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
 }
 
 java {
     withJavadocJar()
     withSourcesJar()
-}
-
-test {
-    useJUnitPlatform()
 }
 
 jar {
