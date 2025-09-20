@@ -21,8 +21,8 @@ import java.util.concurrent.Executors;
  * Core class of the KirCE Logger framework.
  *
  * <p>This logger provides flexible logging with support for multiple handlers,
- * customizable formatters, adjustable minimum log levels, and asynchronous logging.
- * Handlers can be attached either per-instance or globally for all loggers.</p>
+ * customizable formatters, adjustable minimum log levels, optional colored output,
+ * and asynchronous logging. Handlers can be attached either per-instance or globally for all loggers.</p>
  *
  * <pre>
  * KirCELogger logger = new KirCELogger("Main");
@@ -36,6 +36,7 @@ public class KirCELogger {
     private final List<LogHandler> handlers = new ArrayList<>();
     private final LogFormatter formatter;
     private LogLevel minLevel = LogLevel.TRACE;
+    private boolean useColors = false;
 
     private static final List<LogHandler> globalHandlers = Collections.synchronizedList(new ArrayList<>());
     private static LogLevel globalMinLevel = LogLevel.TRACE;
@@ -62,6 +63,15 @@ public class KirCELogger {
     public KirCELogger(String tag, LogFormatter formatter) {
         this.tag = tag;
         this.formatter = formatter;
+    }
+
+    /**
+     * Enables or disables colored log output.
+     *
+     * @param enable true to enable colors, false to disable
+     */
+    public void enableColors(boolean enable) {
+        this.useColors = enable;
     }
 
     /**
@@ -111,11 +121,16 @@ public class KirCELogger {
         if (level.ordinal() < minLevel.ordinal() || level.ordinal() < globalMinLevel.ordinal() || message == null)
             return;
 
-        final String formatted = formatter.format(level, tag, message);
+        String formatted = formatter.format(level, tag, message);
+        if (useColors) formatted = level.getColorCode() + formatted + "\u001B[0m"; // reset color
 
-        handlers.forEach(h -> h.log(level, tag, formatted));
+        final String finalTag = tag;
+        final String finalFormatted = formatted;
+        final LogLevel finalLevel = level;
+
+        handlers.forEach(h -> h.log(finalLevel, finalTag, finalFormatted));
         synchronized (globalHandlers) {
-            globalHandlers.forEach(h -> h.log(level, tag, formatted));
+            globalHandlers.forEach(h -> h.log(finalLevel, finalTag, finalFormatted));
         }
     }
 
