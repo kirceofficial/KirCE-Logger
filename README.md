@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.mixofficial:KirCE-Logger:+'
+    implementation 'com.github.kirceofficial:KirCE-Logger:+'
 }
 ```
 
