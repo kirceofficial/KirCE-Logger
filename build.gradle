@@ -1,23 +1,16 @@
-plugins {
-    id 'java'
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:8.9.2"
+    }
 }
 
-group = 'mx.kirce.logger'
-version = '1.0.3'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-}
-
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
-jar {
-    archiveBaseName.set("kirce-logger")
-    from sourceSets.main.output
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
 }

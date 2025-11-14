@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Mix (KirCE Logger)
+ * Copyright 2025 KirCE (KirCE Logger)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  *
