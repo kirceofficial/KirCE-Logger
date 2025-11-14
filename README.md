@@ -1,5 +1,7 @@
 # KirCE Logger
 
+[![](https://jitpack.io/v/kirceofficial/KirCE-Logger.svg)](https://jitpack.io/#kirceofficial/KirCE-Logger)
+
 ![KirCE Logger Logo](images/logo.png)
 
 **KirCE Logger** is an open-source, high-performance Java logger library.  
