@@ -14,12 +14,13 @@ Designed for developers who need **flexible, extensible, and color-coded logging
 
 - Cross-platform: Android, Desktop, and Server
 - Supports multiple log levels:
-  - `TRACE` – fine-grained debug information
-  - `DEBUG` – general debug info
-  - `INFO` – informational messages
-  - `WARN` – warnings for potential issues
-  - `ERROR` – recoverable errors
-  - `FATAL` – severe errors likely causing termination
+  - `TRACE` – Fine-grained debug information
+  - `DEBUG` – General debug info
+  - `INFO` – Informational messages
+  - `WARN` – Warnings for potential issues
+  - `ERROR` – Recoverable errors
+  - `FATAL` – Severe errors likely causing termination
+  - `VERBOSE` - White/Gray	Extremely detailed messages, intended for in-depth debugging and tracing internal application behavior
 - Optional **ANSI color codes** for console output
 - Asynchronous logging support for high performance
 - Extensible via custom `LogHandler`s
@@ -61,6 +62,7 @@ public class Main {
         logger.warn("WARN message");
         logger.error("ERROR message");
         logger.fatal("FATAL message");
+        logger.verbose("VERBOSE message")
     }
 }
 ```

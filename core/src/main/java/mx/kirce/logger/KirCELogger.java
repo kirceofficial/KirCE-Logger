@@ -210,13 +210,14 @@ public class KirCELogger {
         asyncExecutor.submit(() -> log(level, message));
     }
 
-    // --- Convenience methods for log levels ---
     public void trace(String message) { log(LogLevel.TRACE, message); }
     public void debug(String message) { log(LogLevel.DEBUG, message); }
     public void info(String message)  { log(LogLevel.INFO, message); }
     public void warn(String message)  { log(LogLevel.WARN, message); }
     public void error(String message) { log(LogLevel.ERROR, message); }
     public void fatal(String message) { log(LogLevel.FATAL, message); }
+    public void verbose(String message) {
+log(LogLevel.VERBOSE, message); }
 
     public void traceAsync(String message) { logAsync(LogLevel.TRACE, message); }
     public void debugAsync(String message) { logAsync(LogLevel.DEBUG, message); }
@@ -224,6 +225,8 @@ public class KirCELogger {
     public void warnAsync(String message)  { logAsync(LogLevel.WARN, message); }
     public void errorAsync(String message) { logAsync(LogLevel.ERROR, message); }
     public void fatalAsync(String message) { logAsync(LogLevel.FATAL, message); }
+    public void verboseAsync(String
+message) { logAsync(LogLevel.VERBOSE, message); }
 
     /**
      * Quickly get a logger instance with default global formatter and settings.

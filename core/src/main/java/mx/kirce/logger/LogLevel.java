@@ -35,7 +35,10 @@ public enum LogLevel {
     ERROR("\u001B[31m"),
 
     /** Severe errors likely leading to application termination. Color: Magenta */
-    FATAL("\u001B[35m");
+    FATAL("\u001B[35m"),
+    
+    /** Very detailed messages for debugging and development. Color: White */
+    VERBOSE("\u001B[37m");
 
     private final String colorCode;
 

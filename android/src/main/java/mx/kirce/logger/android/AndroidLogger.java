@@ -14,19 +14,25 @@ import android.util.Log;
 import mx.kirce.logger.KirCELogger;
 import mx.kirce.logger.LogLevel;
 import mx.kirce.logger.handle.LogHandler;
+
 import java.util.Map;
 
 /**
  * AndroidLogger integrates KirCE Logger with Android Logcat.
  *
  * <p>Log messages are sent to both KirCE Logger handlers and Android Studio Logcat.
- * Supports context, colors, and asynchronous logging.</p>
+ * Supports context, colors, asynchronous logging, and VERBOSE level.</p>
  *
  * <pre>
  * AndroidLogger logger = new AndroidLogger("Main");
  * logger.putContext("userId", 42);
+ * logger.verbose("Verbose message example");
  * logger.info("Hello with context!");
  * </pre>
+ *
+ * @author KirCE
+ * @version 1.2.0
+ * @since 2025
  */
 public class AndroidLogger {
 
@@ -44,7 +50,7 @@ public class AndroidLogger {
     }
 
     /**
-     * Enables or disables colored log output.
+     * Enables or disables colored log output for this logger instance.
      *
      * @param enable true to enable colors
      */
@@ -53,7 +59,7 @@ public class AndroidLogger {
     }
 
     /**
-     * Adds a handler specific to this logger instance.
+     * Adds a custom log handler to this logger instance.
      *
      * @param handler the handler to add
      */
@@ -62,7 +68,7 @@ public class AndroidLogger {
     }
 
     /**
-     * Adds or updates a context value.
+     * Adds or updates a context value for this logger.
      *
      * @param key   context key
      * @param value context value
@@ -72,7 +78,7 @@ public class AndroidLogger {
     }
 
     /**
-     * Removes a context value.
+     * Removes a context value by key.
      *
      * @param key context key
      */
@@ -81,44 +87,89 @@ public class AndroidLogger {
     }
 
     /**
-     * Returns an unmodifiable map of current context values.
+     * Returns an unmodifiable map of the current context values.
+     *
+     * @return the current context map
      */
     public Map<String, Object> getContext() {
         return kirceLogger.getContext();
     }
 
+    /**
+     * Sends a log message to Android Logcat using the appropriate Log level.
+     *
+     * @param level   the log level
+     * @param message the message to log
+     */
     private void logToAndroid(LogLevel level, String message) {
         switch (level) {
-            case TRACE -> Log.v(tag, message);
-            case DEBUG -> Log.d(tag, message);
-            case INFO  -> Log.i(tag, message);
-            case WARN  -> Log.w(tag, message);
-            case ERROR -> Log.e(tag, message);
-            case FATAL -> Log.wtf(tag, message);
+            case VERBOSE -> Log.v(tag, message);
+            case TRACE   -> Log.v(tag, message);
+            case DEBUG   -> Log.d(tag, message);
+            case INFO    -> Log.i(tag, message);
+            case WARN    -> Log.w(tag, message);
+            case ERROR   -> Log.e(tag, message);
+            case FATAL   -> Log.wtf(tag, message);
         }
     }
 
+    /**
+     * Logs a message asynchronously to KirCE Logger and Android Logcat.
+     *
+     * @param level   the log level
+     * @param message the message to log
+     */
     private void log(LogLevel level, String message) {
         kirceLogger.logAsync(level, message);
         logToAndroid(level, message);
     }
 
-    public void trace(String message) { log(LogLevel.TRACE, message); }
-    public void debug(String message) { log(LogLevel.DEBUG, message); }
-    public void info(String message)  { log(LogLevel.INFO, message); }
-    public void warn(String message)  { log(LogLevel.WARN, message); }
-    public void error(String message) { log(LogLevel.ERROR, message); }
-    public void fatal(String message) { log(LogLevel.FATAL, message); }
+    /** Logs a VERBOSE message. */
+    public void verbose(String message) { log(LogLevel.VERBOSE, message); }
 
-    public void traceAsync(String message) { kirceLogger.traceAsync(message); logToAndroid(LogLevel.TRACE, message); }
-    public void debugAsync(String message) { kirceLogger.debugAsync(message); logToAndroid(LogLevel.DEBUG, message); }
-    public void infoAsync(String message)  { kirceLogger.infoAsync(message);  logToAndroid(LogLevel.INFO, message); }
-    public void warnAsync(String message)  { kirceLogger.warnAsync(message);  logToAndroid(LogLevel.WARN, message); }
-    public void errorAsync(String message) { kirceLogger.errorAsync(message); logToAndroid(LogLevel.ERROR, message); }
-    public void fatalAsync(String message) { kirceLogger.fatalAsync(message); logToAndroid(LogLevel.FATAL, message); }
+    /** Logs a TRACE message. */
+    public void trace(String message)   { log(LogLevel.TRACE, message); }
+
+    /** Logs a DEBUG message. */
+    public void debug(String message)   { log(LogLevel.DEBUG, message); }
+
+    /** Logs an INFO message. */
+    public void info(String message)    { log(LogLevel.INFO, message); }
+
+    /** Logs a WARN message. */
+    public void warn(String message)    { log(LogLevel.WARN, message); }
+
+    /** Logs an ERROR message. */
+    public void error(String message)   { log(LogLevel.ERROR, message); }
+
+    /** Logs a FATAL message. */
+    public void fatal(String message)   { log(LogLevel.FATAL, message); }
+    
+    /** Logs a VERBOSE message asynchronously. */
+    public void verboseAsync(String message) { kirceLogger.logAsync(LogLevel.VERBOSE, message); logToAndroid(LogLevel.VERBOSE, message); }
+
+    /** Logs a TRACE message asynchronously. */
+    public void traceAsync(String message)   { kirceLogger.traceAsync(message); logToAndroid(LogLevel.TRACE, message); }
+
+    /** Logs a DEBUG message asynchronously. */
+    public void debugAsync(String message)   { kirceLogger.debugAsync(message); logToAndroid(LogLevel.DEBUG, message); }
+
+    /** Logs an INFO message asynchronously. */
+    public void infoAsync(String message)    { kirceLogger.infoAsync(message);  logToAndroid(LogLevel.INFO, message); }
+
+    /** Logs a WARN message asynchronously. */
+    public void warnAsync(String message)    { kirceLogger.warnAsync(message);  logToAndroid(LogLevel.WARN, message); }
+
+    /** Logs an ERROR message asynchronously. */
+    public void errorAsync(String message)   { kirceLogger.errorAsync(message); logToAndroid(LogLevel.ERROR, message); }
+
+    /** Logs a FATAL message asynchronously. */
+    public void fatalAsync(String message)   { kirceLogger.fatalAsync(message); logToAndroid(LogLevel.FATAL, message); }
 
     /**
      * Returns the underlying KirCELogger instance.
+     *
+     * @return the KirCELogger object
      */
     public KirCELogger getKirceLogger() {
         return kirceLogger;
