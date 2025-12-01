@@ -30,9 +30,6 @@ import java.util.Map;
  * logger.info("Hello with context!");
  * </pre>
  *
- * @author KirCE
- * @version 1.2.0
- * @since 2025
  */
 public class AndroidLogger {
 

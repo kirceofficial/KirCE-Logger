@@ -186,7 +186,7 @@ public class KirCELogger {
         return Map.copyOf(context);
     }
 
-    private void log(LogLevel level, String message) {
+    public void log(LogLevel level, String message) {
     if (message == null || level.ordinal() < minLevel.ordinal() || level.ordinal() < globalMinLevel.ordinal())
         return;
 

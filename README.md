@@ -25,7 +25,6 @@ Designed for developers who need **flexible, extensible, and color-coded logging
 - Asynchronous logging support for high performance
 - Extensible via custom `LogHandler`s
 - Memory-based log storage for later analysis
-- HTTP log submission for remote servers
 - Customizable log formatting with `LogFormatter`
 
 ---
@@ -77,12 +76,11 @@ public class Main {
 `WARN`	Yellow	Warnings for potential `issues`
 `ERROR`	Red	Recoverable errors
 `FATAL`	Magenta	Severe errors likely causing termination
+`VERBOSE` White/Gray Extremely detailed messages
 
 ## Advanced Features
 
 - **MemoryLogHandler** - – store last N messages in memory
-
-- **HttpLogHandler** - – send log messages to a server
 
 - **Asynchronous logging** – log messages without blocking the main thread.  
   Example: `logger.infoAsync("message")`
