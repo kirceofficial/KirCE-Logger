@@ -20,7 +20,7 @@ Designed for developers who need **flexible, extensible, and color-coded logging
   - `WARN` – Warnings for potential issues
   - `ERROR` – Recoverable errors
   - `FATAL` – Severe errors likely causing termination
-  - `VERBOSE` - White/Gray	Extremely detailed messages, intended for in-depth debugging and tracing internal application behavior
+  - `VERBOSE` - Extremely detailed messages for in-depth debugging
 - Optional **ANSI color codes** for console output
 - Asynchronous logging support for high performance
 - Extensible via custom `LogHandler`s
@@ -63,6 +63,26 @@ public class Main {
         logger.fatal("FATAL message");
         logger.verbose("VERBOSE message")
     }
+}
+```
+
+```kotlin
+import mx.kirce.logger.KirCELogger
+import mx.kirce.logger.handle.ConsoleLogHandler
+import mx.kirce.logger.LogLevel
+
+fun main() {
+    val logger = KirCELogger("Main")
+    logger.addHandler(ConsoleLogHandler(true)) // Enable colors
+    KirCELogger.setGlobalMinLevel(LogLevel.INFO)
+
+    logger.trace("TRACE message") // won't be shown
+    logger.debug("DEBUG message") // won't be shown
+    logger.info("INFO message")
+    logger.warn("WARN message")
+    logger.error("ERROR message")
+    logger.fatal("FATAL message")
+    logger.verbose("VERBOSE message")
 }
 ```
 
