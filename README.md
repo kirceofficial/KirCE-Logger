@@ -44,6 +44,7 @@ dependencies {
 
 ## Quick Start
 
+## Java Example
 ```java
 import mx.kirce.logger.KirCELogger;
 import mx.kirce.logger.handle.ConsoleLogHandler;
@@ -65,6 +66,7 @@ public class Main {
     }
 }
 ```
+## Kotlin Example
 
 ```kotlin
 import mx.kirce.logger.KirCELogger
