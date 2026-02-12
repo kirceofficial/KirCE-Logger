@@ -1,6 +1,6 @@
 # KirCE Logger
 
-[![](https://jitpack.io/v/kirceofficial/KirCE-Logger.svg)](https://jitpack.io/#kirceofficial/KirCE-Logger)
+[![](https://jitpack.io/v/kirceofficial/KirCE-Logger.svg)](https://jitpack.io/#MrTomatoes32/KirCE-Logger)
 
 ![KirCE Logger Logo](images/logo.png)
 
@@ -38,7 +38,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.kirceofficial:KirCE-Logger:+'
+    implementation 'com.github.MrTomatoes32:KirCE-Logger:+'
 }
 ```
 
